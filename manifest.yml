@@ -1,24 +1,12 @@
----
-declared-services:
-  my conversation:
-    label: conversation
-    plan: free
-  my weather company data:
-    label: weather
-    plan: free
-  my speech to text:
-    label: speech_to_text
-    plan: standard
-  my text to speech:
-    label: text_to_speech
-    plan: standard
 applications:
-- name: weather-conv-stt-tts
+- name: chatbot-sng
   command: npm start
   path: .
   memory: 512M
   instances: 1
   services:
-  
+    - Conversation-sng
+    - Speech to Text-sng
+    - Text to Speech-sng
   env:
     NPM_CONFIG_PRODUCTION: false

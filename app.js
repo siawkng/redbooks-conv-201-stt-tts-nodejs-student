@@ -30,7 +30,6 @@ app.use(bodyParser.json());
 
 //Weather Company Endpoint
 var vcap = JSON.parse(process.env.VCAP_SERVICES);
-var weatherCompanyEndpoint = vcap.weatherinsights[0].credentials.url;
 
 // Create the service wrapper
 var conversation = new Conversation({
@@ -42,9 +41,24 @@ var conversation = new Conversation({
 	version_date: '2016-10-21',
 	version: 'v1'
 });
+
 // ADD SPEECH TO TEXT INTEGRATION CODE HERE
+var sttEndpoint = vcap.speech_to_text[0].credentials.url;
+var stt_credentials = Object.assign({
+	username: process.env.SPEECH_TO_TEXT_USERNAME || '<username>',
+	password: process.env.SPEECH_TO_TEXT_PASSWORD || '<password>',
+	url: process.env.SPEECH_TO_TEXT_URL || 'https://stream.watsonplatform.net/speech-to-text/api',
+	version: 'v1',
+}, vcap.speech_to_text[0].credentials);
 
 // ADD TEXT TO SPEECH INTEGRATION CODE HERE
+var ttsEndpoint = vcap.text_to_speech[0].credentials.url;
+var tts_credentials = Object.assign({
+	username: process.env.TEXT_TO_SPEECH_USERNAME || '<username>',
+	password: process.env.TEXT_TO_SPEE_PASSWORD || '<password',
+	url: process.env.TEXT_TO_SPEECH_URL || 'https://stream.watsonplatform.net/text-to-speech/api',
+	version: 'v1',
+}, vcap.text_to_speech[0].credentials);
 
 
 // Endpoint to be call from the client side
@@ -128,7 +142,7 @@ function updateMessage(input, response, callback) {
 		response.output = {};
 		callback(response);
 	} else if (response.entities.length > 0 && response.entities[0].entity === 'city') {
-		var location = getLocationCoordinatesForCity(response.entities[0].value);		
+		var location = getLocationCoordinatesForCity(response.entities[0].value);
 		getWeatherForecastForCity(location, function(e, weatherOutput) {
 			response.output.text[0] = weatherOutput;
 			callback(response);
@@ -141,6 +155,29 @@ function updateMessage(input, response, callback) {
 }
 
 //ADD TEXT TO SPEECH GET TOKEN ENDPOINT HERE
+app.get('/api/text-to-speech/token', function(req, res, next){
+	watson.authorization(tts_credentials).getToken({ url:
+	tts_credentials.url }, function(error, token) {
+		if (error) {
+			if (error.code !== 401)
+			return next(error);
+		} else {
+			res.send(token);
+		}
+	});
+});
+
 //ADD SPEECH TO TEXT GET TOKEN ENDPOINT HERE
+app.get('/api/speech-to-text/token', function(req, res, next) {
+	watson.authorization(stt_credentials).getToken({ url:
+	stt_credentials.url }, function(error, token) {
+		if (error) {
+			if (error.code !== 401)
+			return next(error);
+		} else {
+			res.send(token);
+		}
+	});
+});
 
 module.exports = app;
