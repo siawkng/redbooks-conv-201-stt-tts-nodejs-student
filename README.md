@@ -9,4 +9,4 @@ COPYRIGHT LICENSE: THIS INFORMATION CONTAINS SAMPLE APPLICATION PROGRAMS IN SOUR
 This corresponds to task “2.5 Integrating Conversation with Speech to Text and Text to Speech services” in Conversation API.
 
 A sample application that demonstrates the integration between Watson Conversation API and Watson Speech to Text and Text to Speech, to get real-time weather information for the specified weather.
-The user chats with the application using his voice and the application responds in speech too.
+The user chats with the application using his voice and the application responds in speech too.# redbooks-conv-201-stt-tts-nodejs-student
